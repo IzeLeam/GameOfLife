@@ -1,6 +1,7 @@
 package fr.izeleam.cell;
 
 import fr.izeleam.GameOfLife;
+import fr.izeleam.util.Visitor;
 import fr.izeleam.cell.state.CellState;
 
 public class Cell {
@@ -23,11 +24,19 @@ public class Cell {
     state = state.die();
   }
 
+  public void invert() {
+    state = state.invert();
+  }
+
   public boolean isAlive() {
     return state.isAlive();
   }
 
-  public int getNeighboursCount(final GameOfLife game) {
+  public void accept(final Visitor v) {
+    state.accept(v, this);
+  }
+
+  public int getLivingNeighboursCount(final GameOfLife game) {
     int count = 0;
     for (int i = x - 1; i <= x + 1; i++) {
       for (int j = y - 1; j <= y + 1; j++) {

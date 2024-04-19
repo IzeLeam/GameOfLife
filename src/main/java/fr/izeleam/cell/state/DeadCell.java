@@ -1,5 +1,8 @@
 package fr.izeleam.cell.state;
 
+import fr.izeleam.util.Visitor;
+import fr.izeleam.cell.Cell;
+
 public class DeadCell implements CellState {
 
   private final static DeadCell instance = new DeadCell();
@@ -24,5 +27,10 @@ public class DeadCell implements CellState {
   @Override
   public boolean isAlive() {
     return false;
+  }
+
+  @Override
+  public void accept(final Visitor v, final Cell cell) {
+    v.visitDeadCell(cell);
   }
 }

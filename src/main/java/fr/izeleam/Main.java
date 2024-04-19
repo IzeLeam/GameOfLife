@@ -1,21 +1,13 @@
 package fr.izeleam;
 
-import fr.izeleam.gui.controllers.GameOfLifeController;
-import fr.izeleam.managers.ControllerManager;
-import javafx.application.Application;
-import javafx.stage.Stage;
+import fr.izeleam.observers.GameOfLifeUI;
 
-public class Main extends Application {
+public class Main {
 
   public static void main(String[] args) {
-    GameOfLife gameOfLife = new GameOfLife(50, 50);
-    GameOfLifeUI gameOfLifeUI = new GameOfLifeUI(gameOfLife);
+    GameOfLife game = new GameOfLife(500, 500);
+    GameOfLifeUI ui = new GameOfLifeUI(game);
 
-  }
-
-  @Override
-  public void start(Stage primaryStage) {
-    GameOfLife game = new GameOfLife(50, 50);
-    ControllerManager.getInstance().show(new GameOfLifeController(game));
+    SwingApp app = new SwingApp(ui, game);
   }
 }
