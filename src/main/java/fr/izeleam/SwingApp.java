@@ -30,6 +30,9 @@ import javax.swing.JSlider;
 import javax.swing.JViewport;
 import javax.swing.border.TitledBorder;
 
+/**
+ * Represents the Swing application of the game of life.
+ */
 public class SwingApp extends JFrame {
 
   private final GameOfLife game;
@@ -40,6 +43,12 @@ public class SwingApp extends JFrame {
   private String drawMode = null;
   private int opacity = 0;
 
+  /**
+   * Constructor.
+   *
+   * @param gamePanel The game panel.
+   * @param game The game of life.
+   */
   public SwingApp(final GameOfLifeUI gamePanel, final GameOfLife game) {
     super("Game of Life");
     this.game = game;
@@ -114,7 +123,7 @@ public class SwingApp extends JFrame {
     final JPanel westPanel = new JPanel();
     westPanel.setLayout(new GridLayout(3, 1));
     westPanel.add(getEditionToolBar());
-    westPanel.add(getPatternList());
+    westPanel.add(new JPanel());
     westPanel.add(getControlsInformations());
     this.add(westPanel, BorderLayout.WEST);
 
@@ -123,12 +132,13 @@ public class SwingApp extends JFrame {
     this.setVisible(true);
   }
 
+  /**
+   * Creation of the top toolbar.
+   *
+   * @return The toolbar in a JPanel.
+   */
   private JPanel getToolBar() {
     final JPanel toolBar = new JPanel();
-
-    JButton previousButton = new JButton("Previous");
-    previousButton.setToolTipText("Previous generation");
-    previousButton.addActionListener(e -> game.previousGeneration());
 
     this.playButton = new JButton(game.isRunning() ? "Pause" : "Play");
     playButton.setToolTipText("Play/Pause the game");
@@ -151,8 +161,7 @@ public class SwingApp extends JFrame {
       game.setSpeed(speedSlider.getMaximum() - speedSlider.getValue());
       speedSlider.setBorder(new TitledBorder("Speed :" + (speedSlider.getMaximum() - speedSlider.getValue()) + "ms"));
     });
-
-    toolBar.add(previousButton);
+    
     toolBar.add(playButton);
     toolBar.add(nextButton);
     toolBar.add(getVisitorsList());
@@ -161,6 +170,11 @@ public class SwingApp extends JFrame {
     return toolBar;
   }
 
+  /**
+   * Creation of the edition toolbar.
+   *
+   * @return The toolbar in a JPanel.
+   */
   private JPanel getEditionToolBar() {
     final JPanel editionToolBar = new JPanel();
     editionToolBar.setBorder(new TitledBorder("Edition"));
@@ -201,11 +215,11 @@ public class SwingApp extends JFrame {
 
     gbc.gridx = 0;
     gbc.gridy = 0;
-    editionToolBar.add(radiusSlider, gbc);
+    editionToolBar.add(editionMode, gbc);
 
     gbc.gridx = 0;
     gbc.gridy = 1;
-    editionToolBar.add(editionMode, gbc);
+    editionToolBar.add(radiusSlider, gbc);
 
     gbc.gridx = 0;
     gbc.gridy = 2;
@@ -218,14 +232,11 @@ public class SwingApp extends JFrame {
     return editionToolBar;
   }
 
-  private JPanel getPatternList() {
-    final JPanel patternList = new JPanel();
-
-    //todo
-
-    return patternList;
-  }
-
+  /**
+   * Creation of the controls information panel.
+   *
+   * @return The controls information panel in a JPanel.
+   */
   private JPanel getControlsInformations() {
     final JPanel controlsInformations = new JPanel();
     controlsInformations.setBorder(new TitledBorder("Controls"));
@@ -267,8 +278,15 @@ public class SwingApp extends JFrame {
     return controlsInformations;
   }
 
+  /**
+   * Get the list of visitors.
+   *
+   * @return The list of visitors in a JComboBox.
+   */
   private JComboBox<String> getVisitorsList() {
     final JComboBox<String> visitorChoice = new JComboBox<>();
+    visitorChoice.setBorder(new TitledBorder("Game mode"));
+
     visitorChoice.addItem("DayNight");
     visitorChoice.addItem("Conway");
     visitorChoice.addItem("HighLife");
@@ -297,6 +315,14 @@ public class SwingApp extends JFrame {
     return visitorChoice;
   }
 
+  /**
+   * Draw a point on the grid based on the mouse coordinates and the edition radius.
+   *
+   * @param ex The x coordinate.
+   * @param ey The y coordinate.
+   * @param gameScroll The scroll pane.
+   * @param gamePanel The game panel.
+   */
   private void drawPoint(int ex, int ey, JScrollPane gameScroll, GameOfLifeUI gamePanel) {
     int x = ex / gamePanel.getCaseSize();
     int y = ey / gamePanel.getCaseSize();
@@ -309,7 +335,7 @@ public class SwingApp extends JFrame {
       for (int j = -editionRadius; j <= editionRadius; j++) {
         if (x + i >= 0 && x + i < game.getXMax() && y + j >= 0 && y + j < game.getYMax()) {
           final float distance = (float) Math.sqrt(i * i + j * j);
-          if (distance > editionRadius) {
+          if (distance >= editionRadius) {
             continue;
           }
           if (drawMode.equals("live")) {
@@ -324,6 +350,9 @@ public class SwingApp extends JFrame {
     gamePanel.repaint();
   }
 
+  /**
+   * Pause the game.
+   */
   private void pauseGame() {
     if (game.isRunning()) {
       game.stop();
@@ -331,6 +360,9 @@ public class SwingApp extends JFrame {
     }
   }
 
+  /**
+   * Play the game.
+   */
   private void playGame() {
     if (!game.isRunning()) {
       game.start();

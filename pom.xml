@@ -16,7 +16,7 @@
   </properties>
 
   <build>
-    <finalName>Game of Life</finalName>
+    <finalName>game-of-life</finalName>
     <defaultGoal>clean install</defaultGoal>
 
     <plugins>

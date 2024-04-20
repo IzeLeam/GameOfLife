@@ -1,6 +1,12 @@
 package fr.izeleam.util;
 
+/**
+ * Interface to represent an observer object.
+ */
 public interface Observer {
 
-    void update();
+  /**
+   * Update the observer.
+   */
+  void update();
 }
