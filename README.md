@@ -2,6 +2,8 @@
 
 This application is a simple implementation of the game of life in Java.
 
+Pour lire la documentation en français : [Cliquez ici](#jeu-de-la-vie)
+
 ## What's the game of life?
 
 The game of life is a cellular automaton created by the British mathematician John Horton Conway in 1970. It is a zero-player game, meaning that its evolution is determined by its initial state, requiring no further input. One interacts with the Game of Life by creating an initial configuration and observing how it evolves.
