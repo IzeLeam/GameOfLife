@@ -2,6 +2,9 @@ package fr.izeleam.patterns;
 
 import fr.izeleam.GameOfLife;
 
+/**
+ * Represents a pattern in the game of life.
+ */
 public class Pattern {
 
   private final String name;
@@ -9,6 +12,13 @@ public class Pattern {
   private final int height;
   private final String serialised;
 
+  /**
+   * Constructor.
+   *
+   * @param name The name of the pattern.
+   * @param size The size of the pattern.
+   * @param serialised The serialised pattern.
+   */
   public Pattern(final String name, final String size, final String serialised) {
     this.name = name;
     String[] sizes = size.split("x");
@@ -17,22 +27,50 @@ public class Pattern {
     this.serialised = serialised;
   }
 
+  /**
+   * Get the name of the pattern.
+   *
+   * @return The name of the pattern.
+   */
   public String getName() {
     return name;
   }
 
+  /**
+   * Get the width of the pattern.
+   *
+   * @return The width of the pattern.
+   */
   public int getWidth() {
     return width;
   }
 
+  /**
+   * Get the height of the pattern.
+   *
+   * @return The height of the pattern.
+   */
   public int getHeight() {
     return height;
   }
 
+  /**
+   * Get the serialised pattern.
+   *
+   * @return The serialised pattern.
+   */
   public String getSerialised() {
     return serialised;
   }
 
+  /**
+   * Print the pattern on the game of life.
+   *
+   * @param game The game of life.
+   * @param x The x position.
+   * @param y The y position.
+   * @param direction The direction of the pattern.
+   */
   public void print(final GameOfLife game, final int x, final int y, final PatternDirection direction) {
     String[] serialised = getSerialised().split("");
     int[][] matrix = new int[getHeight()][getWidth()];
@@ -74,6 +112,11 @@ public class Pattern {
     }
   }
 
+  /**
+   * Rotate the matrix.
+   *
+   * @param matrix The matrix.
+   */
   private void rotateMatrix(int[][] matrix) {
     int N = matrix.length;
     for (int x = 0; x < N / 2; x++) {

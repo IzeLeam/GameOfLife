@@ -7,26 +7,51 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Manages patterns in the game of life.
+ */
 public class PatternManager {
 
   private static final PatternManager instance = new PatternManager();
   private final List<Pattern> patterns = new ArrayList<>();
 
+  /**
+   * Constructor.
+   */
   private PatternManager() {
   }
 
+  /**
+   * Get the instance of the pattern manager.
+   *
+   * @return The instance of the pattern manager.
+   */
   public static PatternManager getInstance() {
     return instance;
   }
 
+  /**
+   * Get the patterns.
+   *
+   * @return The patterns.
+   */
   public List<Pattern> getPatterns() {
     return patterns;
   }
 
+  /**
+   * Get a pattern by name.
+   *
+   * @param name The name of the pattern.
+   * @return The pattern.
+   */
   public Pattern getByName(String name) {
     return patterns.stream().filter(p -> p.getName().equals(name)).findFirst().orElse(null);
   }
 
+  /**
+   * Load the patterns from the JSON file.
+   */
   public void loadPatterns() {
     File file = new File(Main.class.getResource("patterns.json").getFile());
 
