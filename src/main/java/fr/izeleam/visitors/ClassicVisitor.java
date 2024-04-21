@@ -28,7 +28,7 @@ public class ClassicVisitor extends Visitor {
    */
   @Override
   public void visitLivingCell(Cell cell) {
-    int livingNeighbours = cell.getLivingNeighboursCount(this.gameOfLife);
+    int livingNeighbours = cell.getLivingNeighboursCount();
     if (livingNeighbours < 2 || livingNeighbours > 3) {
       this.gameOfLife.addCommand(new DieCommand(cell));
     }
@@ -42,7 +42,7 @@ public class ClassicVisitor extends Visitor {
    */
   @Override
   public void visitDeadCell(Cell cell) {
-    int livingNeighbours = cell.getLivingNeighboursCount(this.gameOfLife);
+    int livingNeighbours = cell.getLivingNeighboursCount();
     if (livingNeighbours == 3) {
       this.gameOfLife.addCommand(new LiveCommand(cell));
     }

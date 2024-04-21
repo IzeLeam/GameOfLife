@@ -21,6 +21,8 @@ public class Cell {
    * The y position of the cell in the grid.
    */
   private final int y;
+  private final GameOfLife game;
+  private int livingNeighboursCount = 0;
 
   /**
    * Constructor.
@@ -29,7 +31,8 @@ public class Cell {
    * @param x The x position of the cell in the grid.
    * @param y The y position of the cell in the grid.
    */
-  public Cell(final CellState state, final int x, final int y) {
+  public Cell(final GameOfLife game, final CellState state, final int x, final int y) {
+    this.game = game;
     this.state = state;
     this.x = x;
     this.y = y;
@@ -39,14 +42,34 @@ public class Cell {
    * Change the state of the cell to alive.
    */
   public void live() {
+    if (game.getCell(x, y).isAlive()) {
+      return;
+    }
     state = state.live();
+    for (int i = x - 1; i <= x + 1; i++) {
+      for (int j = y - 1; j <= y + 1; j++) {
+        if (i >= 0 && i < game.getXMax() && j >= 0 && j < game.getYMax() && !(i == x && j == y)) {
+          game.getCell(i, j).addLivingNeighboursCount();
+        }
+      }
+    }
   }
 
   /**
    * Change the state of the cell to dead.
    */
   public void die() {
+    if (!game.getCell(x, y).isAlive()) {
+      return;
+    }
     state = state.die();
+    for (int i = x - 1; i <= x + 1; i++) {
+      for (int j = y - 1; j <= y + 1; j++) {
+        if (i >= 0 && i < game.getXMax() && j >= 0 && j < game.getYMax() && !(i == x && j == y)) {
+          game.getCell(i, j).removeLivingNeighboursCount();
+        }
+      }
+    }
   }
 
   /**
@@ -67,13 +90,21 @@ public class Cell {
     state.accept(v, this);
   }
 
+  public void addLivingNeighboursCount() {
+    Math.min(8, livingNeighboursCount++);
+  }
+
+  public void removeLivingNeighboursCount() {
+    Math.max(0, livingNeighboursCount--);
+  }
+
   /**
    * Get the count of living neighbours of the cell.
    *
    * @param game The game of life.
    * @return The count of living neighbours of the cell.
    */
-  public int getLivingNeighboursCount(final GameOfLife game) {
+  public int initLivingNeighboursCount() {
     int count = 0;
     for (int i = x - 1; i <= x + 1; i++) {
       for (int j = y - 1; j <= y + 1; j++) {
@@ -84,6 +115,11 @@ public class Cell {
         }
       }
     }
+    this.livingNeighboursCount = count;
     return count;
+  }
+
+  public int getLivingNeighboursCount() {
+    return livingNeighboursCount;
   }
 }

@@ -12,7 +12,7 @@ The universe of the Game of Life is a infinite two-dimensional grid of square ce
 ## Installation
 
 Java 16 is required to run this program.
-Download the .jar file from the [releases tab]("https://github.com/IzeLeam/GameOfLife/releases") and run it with the following command:
+Download the .jar file from the [releases tab](https://github.com/IzeLeam/GameOfLife/releases) and run it with the following command:
 
 ```bash
 java -jar game-of-life.jar
@@ -72,7 +72,7 @@ L'univers du jeu de la vie est une grille en deux dimensions, infinie de cellule
 ## Installation
 
 Java 16 est requis pour exécuter ce programme.
-Téléchargez le fichier .jar depuis l'onglet des [releases]("https://github.com/IzeLeam/GameOfLife/releases") et exécutez-le avec la commande suivante :
+Téléchargez le fichier .jar depuis l'onglet des [releases](https://github.com/IzeLeam/GameOfLife/releases) et exécutez-le avec la commande suivante :
 
 ```bash
 java -jar game-of-life.jar
@@ -84,6 +84,7 @@ Vous pouvez également exécuter le programme en double-cliquant sur le fichier 
 
 - **Mode édition** : Dessinez sur la grille pendant que la simulation est en pause ou en cours d'exécution.
 - **Mode de jeu** : Sélectionnez les règles de la simulation. Le mode par défaut est le jeu de la vie classique : les règles de Conway.
+- **Patterns prédéfinis** : Choisissez parmi une liste de patterns prédéfinis pour les insérer dans la grille.
 
 ## Utilisation
 
@@ -92,11 +93,18 @@ En haut de la fenêtre, il y a des boutons pour contrôler la simulation.
 À gauche de la fenêtre, vous trouverez le panneau d'édition, qui vous permet de dessiner sur la grille.
 En bas se trouve les informations supplémentaires sur la simulation.
 
+Pour vous déplacer dans la grille, vous pouvez cliquer sur la molette de la souris et déplacer le curseur. Vous pouvez également vous déplacer avec le click gauche de la souris uniquement si le mode mouvement est activé.
+Pour zoomer il suffit d'utiliser la molette de la souris.
+
+En mode édition, vous pouvez dessiner des cellules vivantes ou mortes sur la grille. Vous pouvez également insérer des patterns prédéfinis en cliquant sur la grille.
+Sélectionnez un pattern dans la liste déroulante et cliquez sur la grille pour l'insérer.
+Si un pattern est sélectionné, vous ne pourrez plus dessiner librement sur la grille. Il faudra d'abord sélectionner le pattern "None" pour revenir en mode dessin.
+
 **Pour une meilleure expérience, il est recommandé d'utiliser une souris.**
 
 ### Contrôles
 
-- **Clic gauche** : Dessiner une cellule vivante.
+- **Clic gauche** : Dessiner une cellule vivante ou insérer le pattern prédéfini sélectionné.
 - **Clic droit** : Dessiner une cellule morte.
 - **Molette de la souris** : Zoom avant et arrière.
 - **Clic molette de la souris** : Déplacement dans la grille.
@@ -111,6 +119,7 @@ En bas se trouve les informations supplémentaires sur la simulation.
 ### Contrôles d'édition
 
 - **Edition mode** : Activer ou désactiver le mode édition.
+- **Move mode** : Activer ou désactiver le mode déplacement.
 - **Radius** : Changer le rayon de l'outil de dessin.
 - **Opacity** : Changer l'opacité de la grille initiale. Plus la valeur est basse, moins de cellules vivantes apparaîtront.
 - **Reset** : Initialiser la grille avec la valeur d'opacité actuelle.

@@ -6,8 +6,8 @@ import fr.izeleam.cell.state.DeadCell;
 import fr.izeleam.cell.state.LivingCell;
 import fr.izeleam.util.Observable;
 import fr.izeleam.util.Observer;
-import fr.izeleam.visitors.ClassicVisitor;
 import fr.izeleam.util.Visitor;
+import fr.izeleam.visitors.ClassicVisitor;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +43,7 @@ public class GameOfLife implements Observable {
   /**
    * The list of commands.
    */
-  private final List<Command> commands = new ArrayList<>();
+  private final List<Command> commands;
   /**
    * The speed between each generation, in ms.
    */
@@ -63,6 +63,7 @@ public class GameOfLife implements Observable {
     this.xMax = xMax;
     this.yMax = yMax;
     grid = new Cell[xMax][yMax];
+    this.commands = new ArrayList<>();
     this.visitor = new ClassicVisitor(this);
     initGrid(0.5);
   }
@@ -78,10 +79,15 @@ public class GameOfLife implements Observable {
       for (int y = 0; y < yMax; y++) {
         final double rand = Math.random();
         if (rand < density) {
-          grid[x][y] = new Cell(LivingCell.getInstance(), x, y);
+          grid[x][y] = new Cell(this, LivingCell.getInstance(), x, y);
         } else {
-          grid[x][y] = new Cell(DeadCell.getInstance(), x, y);
+          grid[x][y] = new Cell(this, DeadCell.getInstance(), x, y);
         }
+      }
+    }
+    for (int x = 0; x < xMax; x++) {
+      for (int y = 0; y < yMax; y++) {
+        grid[x][y].initLivingNeighboursCount();
       }
     }
   }
@@ -158,7 +164,7 @@ public class GameOfLife implements Observable {
   }
 
   /**
-   * Notify the observers of the game so they can update themselves.
+   * Notify the observers of the game to update.
    */
   @Override
   public void notifyObservers() {

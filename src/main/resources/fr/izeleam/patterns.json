@@ -1,0 +1,12 @@
+{
+  "glider": {
+    "name": "Glider",
+    "size": "3x3",
+    "pattern": "010001111"
+  },
+  "blinker": {
+    "name": "Blinker",
+    "size": "3x3",
+    "pattern": "010101010"
+  }
+}

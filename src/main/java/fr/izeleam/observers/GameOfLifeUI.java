@@ -63,16 +63,16 @@ public class GameOfLifeUI extends JPanel implements Observer {
   public void paint(Graphics g) {
     super.paint(g);
     Graphics2D g2d = (Graphics2D) g;
+    g2d.setColor(Color.WHITE);
+    g2d.fillRect(0, 0, game.getXMax() * caseSize, game.getYMax() * caseSize);
 
+    g2d.setColor(Color.BLACK);
     for (int i = 0; i < game.getXMax(); i++) {
       for (int j = 0; j < game.getYMax(); j++) {
         Cell cell = game.getCell(i, j);
         if (cell.isAlive()) {
-          g2d.setColor(Color.BLACK);
-        } else {
-          g2d.setColor(Color.WHITE);
+          g2d.fillRect(i * caseSize, j * caseSize, caseSize, caseSize);
         }
-        g2d.fillRect(i * caseSize, j * caseSize, caseSize, caseSize);
       }
     }
   }

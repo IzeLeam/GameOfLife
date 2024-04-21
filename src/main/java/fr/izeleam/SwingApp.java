@@ -2,6 +2,9 @@ package fr.izeleam;
 
 import fr.izeleam.observers.GameOfLifeInfos;
 import fr.izeleam.observers.GameOfLifeUI;
+import fr.izeleam.patterns.Pattern;
+import fr.izeleam.patterns.PatternDirection;
+import fr.izeleam.patterns.PatternManager;
 import fr.izeleam.visitors.ClassicVisitor;
 import fr.izeleam.visitors.DayNightVisitor;
 import fr.izeleam.visitors.HighLifeVisitor;
@@ -20,11 +23,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JViewport;
@@ -39,9 +42,12 @@ public class SwingApp extends JFrame {
   private JButton playButton;
   private Point origin;
   private int editionRadius = 1;
-  private boolean inEdition = true;
+  private boolean inEdition = false;
+  private boolean inMove = true;
   private String drawMode = null;
   private int opacity = 0;
+  private Pattern pattern = null;
+  private PatternDirection direction = PatternDirection.NORTH;
 
   /**
    * Constructor.
@@ -65,11 +71,21 @@ public class SwingApp extends JFrame {
     gameScroll.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
     gameScroll.addMouseWheelListener(e -> {
+      JViewport viewPort = gameScroll.getViewport();
+      int x = e.getX() / gamePanel.getCaseSize() + viewPort.getViewPosition().x / gamePanel.getCaseSize();
+      int y = e.getY() / gamePanel.getCaseSize() + viewPort.getViewPosition().y / gamePanel.getCaseSize();
+
       if (e.getWheelRotation() < 0) {
         gamePanel.zoom();
       } else {
         gamePanel.unzoom();
       }
+
+      Rectangle view = viewPort.getViewRect();
+      view.x = x * gamePanel.getCaseSize() - e.getX();
+      view.y = y * gamePanel.getCaseSize() - e.getY();
+
+      gamePanel.scrollRectToVisible(view);
     });
 
     gameScroll.addMouseListener(new MouseAdapter() {
@@ -78,7 +94,14 @@ public class SwingApp extends JFrame {
         if (e.getButton() == MouseEvent.BUTTON1) {
           if (inEdition) {
             drawMode = "live";
-            drawPoint(e.getX(), e.getY(), gameScroll, gamePanel);
+            if (pattern != null) {
+              pattern.print(game, e.getX() / gamePanel.getCaseSize(), e.getY() / gamePanel.getCaseSize(), direction);
+              gamePanel.repaint();
+            } else {
+              drawPoint(e.getX(), e.getY(), gameScroll, gamePanel);
+            }
+          } else if (inMove) {
+            origin = new Point(e.getPoint());
           }
         } else if (e.getButton() == MouseEvent.BUTTON3) {
           if (inEdition) {
@@ -122,12 +145,15 @@ public class SwingApp extends JFrame {
 
     final JPanel westPanel = new JPanel();
     westPanel.setLayout(new GridLayout(3, 1));
+
     westPanel.add(getEditionToolBar());
-    westPanel.add(new JPanel());
+    westPanel.add(getPatternPanel());
     westPanel.add(getControlsInformations());
+
     this.add(westPanel, BorderLayout.WEST);
 
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    this.setBackground(Color.BLACK);
     this.setExtendedState(JFrame.MAXIMIZED_BOTH);
     this.setVisible(true);
   }
@@ -187,10 +213,26 @@ public class SwingApp extends JFrame {
       this.editionRadius = radiusSlider.getValue();
     });
 
-    final JCheckBox editionMode = new JCheckBox("Edition Mode");
+    final JRadioButton editionMode = new JRadioButton("Edition");
+    final JRadioButton moveMode = new JRadioButton("Move");
+
     editionMode.setToolTipText("Enable/Disable the edition mode");
     editionMode.setSelected(inEdition);
-    editionMode.addActionListener(e -> this.inEdition = editionMode.isSelected());
+    editionMode.addActionListener(e -> {
+      editionMode.setSelected(true);
+      this.inEdition = true;
+      this.inMove = false;
+      moveMode.setSelected(false);
+    });
+
+    moveMode.setToolTipText("Enable/Disable the move mode");
+    moveMode.setSelected(inMove);
+    moveMode.addActionListener(e -> {
+      moveMode.setSelected(true);
+      this.inMove = true;
+      this.inEdition = false;
+      editionMode.setSelected(false);
+    });
 
     final JSlider opacitySlider = new JSlider(JSlider.HORIZONTAL, 0, 100, opacity);
     opacitySlider.setBorder(new TitledBorder("Opacity :" + opacitySlider.getValue()));
@@ -215,21 +257,81 @@ public class SwingApp extends JFrame {
 
     gbc.gridx = 0;
     gbc.gridy = 0;
-    editionToolBar.add(editionMode, gbc);
-
-    gbc.gridx = 0;
-    gbc.gridy = 1;
     editionToolBar.add(radiusSlider, gbc);
 
     gbc.gridx = 0;
+    gbc.gridy = 1;
+    editionToolBar.add(editionMode, gbc);
+
+    gbc.gridx = 0;
     gbc.gridy = 2;
-    editionToolBar.add(opacitySlider, gbc);
+    editionToolBar.add(moveMode, gbc);
 
     gbc.gridx = 0;
     gbc.gridy = 3;
+    editionToolBar.add(opacitySlider, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy = 4;
     editionToolBar.add(resetButton, gbc);
 
     return editionToolBar;
+  }
+
+  /**
+   * Creation of the pattern panel.
+   *
+   * @return The pattern panel in a JPanel.
+   */
+  private JPanel getPatternPanel() {
+    final JPanel patternPanel = new JPanel();
+    patternPanel.setBorder(new TitledBorder("Patterns"));
+
+    JComboBox<String> directionChoice = new JComboBox<>();
+    directionChoice.setBorder(new TitledBorder("Direction"));
+    for (PatternDirection direction : PatternDirection.values()) {
+      directionChoice.addItem(direction.name());
+    }
+    directionChoice.addActionListener(e -> {
+      String directionName = (String) directionChoice.getSelectedItem();
+      assert directionName != null;
+      direction = PatternDirection.valueOf(directionName);
+    });
+
+    JComboBox<String> patternChoice = new JComboBox<>();
+    patternChoice.setBorder(new TitledBorder("Pattern"));
+    patternChoice.addItem("None");
+    for (Pattern pattern : PatternManager.getInstance().getPatterns()) {
+      patternChoice.addItem(pattern.getName());
+    }
+
+    patternChoice.addActionListener(e -> {
+      String patternName = (String) patternChoice.getSelectedItem();
+      assert patternName != null;
+      Pattern selected = PatternManager.getInstance().getByName(patternName);
+      if (selected == pattern) {
+        pattern = null;
+        patternChoice.setSelectedIndex(-1);
+      } else {
+        pattern = selected;
+      }
+    });
+
+    GridBagLayout layout = new GridBagLayout();
+    patternPanel.setLayout(layout);
+
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.fill = GridBagConstraints.HORIZONTAL;
+
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    patternPanel.add(patternChoice, gbc);
+
+    gbc.gridy = 1;
+    patternPanel.add(directionChoice, gbc);
+
+
+    return patternPanel;
   }
 
   /**
