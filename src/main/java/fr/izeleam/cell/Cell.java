@@ -100,11 +100,8 @@ public class Cell {
 
   /**
    * Get the count of living neighbours of the cell.
-   *
-   * @param game The game of life.
-   * @return The count of living neighbours of the cell.
    */
-  public int initLivingNeighboursCount() {
+  public void initLivingNeighboursCount() {
     int count = 0;
     for (int i = x - 1; i <= x + 1; i++) {
       for (int j = y - 1; j <= y + 1; j++) {
@@ -116,7 +113,6 @@ public class Cell {
       }
     }
     this.livingNeighboursCount = count;
-    return count;
   }
 
   public int getLivingNeighboursCount() {
