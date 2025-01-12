@@ -47,7 +47,7 @@ public class GameOfLife implements Observable {
   /**
    * The speed between each generation, in ms.
    */
-  private int speed = 1000;
+  private int speed = 500;
   /**
    * The current thread of the game.
    */
@@ -217,6 +217,15 @@ public class GameOfLife implements Observable {
    */
   public void setSpeed(final int speed) {
     this.speed = speed;
+  }
+
+  /**
+   * Get the speed between each generation.
+   *
+   * @return The speed between each generation.
+   */
+  public int getSpeed() {
+    return speed;
   }
 
   /**
