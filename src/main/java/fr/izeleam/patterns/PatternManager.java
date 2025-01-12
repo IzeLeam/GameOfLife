@@ -3,7 +3,8 @@ package fr.izeleam.patterns;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.izeleam.Main;
-import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,10 +54,12 @@ public class PatternManager {
    * Load the patterns from the JSON file.
    */
   public void loadPatterns() {
-    File file = new File(Main.class.getResource("patterns.json").getFile());
+    try (InputStream inputStream = Main.class.getResourceAsStream("patterns.json")) {
+      if (inputStream == null) {
+        throw new FileNotFoundException("Patterns file not found.");
+      }
 
-    try {
-      JsonNode root = new ObjectMapper().readTree(file);
+      JsonNode root = new ObjectMapper().readTree(inputStream);
       root.fields().forEachRemaining(entry -> {
         JsonNode pattern = entry.getValue();
         String name = pattern.get("name").asText();
