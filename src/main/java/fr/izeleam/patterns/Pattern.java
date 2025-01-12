@@ -1,6 +1,8 @@
 package fr.izeleam.patterns;
 
 import fr.izeleam.GameOfLife;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * Represents a pattern in the game of life.
@@ -25,6 +27,12 @@ public class Pattern {
     this.width = Integer.parseInt(sizes[0]);
     this.height = Integer.parseInt(sizes[1]);
     this.serialised = serialised;
+    if (this.serialised.length() != this.width * this.height) {
+      throw new IllegalArgumentException("Invalid pattern size for " + name + ". Expected " + this.width * this.height + " but got " + this.serialised.length()
+      + " in : \n"
+      + Arrays.stream(this.serialised.split("(?<=\\G.{" + this.width + "})"))
+          .collect(Collectors.joining("\n")));
+    }
   }
 
   /**
