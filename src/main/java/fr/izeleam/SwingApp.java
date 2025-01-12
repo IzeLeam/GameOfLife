@@ -14,6 +14,7 @@ import fr.izeleam.visitors.ReplicatorVisitor;
 import fr.izeleam.visitors.SeedsVisitor;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -95,7 +96,9 @@ public class SwingApp extends JFrame {
           if (inEdition) {
             drawMode = "live";
             if (pattern != null) {
-              pattern.print(game, e.getX() / gamePanel.getCaseSize(), e.getY() / gamePanel.getCaseSize(), direction);
+              JViewport viewPort = gameScroll.getViewport();
+              pattern.print(game, e.getX() / gamePanel.getCaseSize() + viewPort.getViewPosition().x / gamePanel.getCaseSize(),
+                  e.getY() / gamePanel.getCaseSize() + viewPort.getViewPosition().y / gamePanel.getCaseSize(), direction);
               gamePanel.repaint();
             } else {
               drawPoint(e.getX(), e.getY(), gameScroll, gamePanel);
@@ -155,6 +158,7 @@ public class SwingApp extends JFrame {
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.setBackground(Color.BLACK);
     this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+    this.setMinimumSize(new Dimension(800, 600));
     this.setVisible(true);
   }
 
@@ -180,14 +184,14 @@ public class SwingApp extends JFrame {
     nextButton.setToolTipText("Next generation");
     nextButton.addActionListener(e -> game.nextGeneration());
 
-    JSlider speedSlider = new JSlider(JSlider.HORIZONTAL, 0, 1000, 500);
+    JSlider speedSlider = new JSlider(JSlider.HORIZONTAL, 0, 1000, game.getSpeed());
     speedSlider.setToolTipText("Set the speed between each generation");
     speedSlider.setBorder(new TitledBorder("Speed :" + (speedSlider.getMaximum() - speedSlider.getValue()) + "ms"));
     speedSlider.addChangeListener(e -> {
       game.setSpeed(speedSlider.getMaximum() - speedSlider.getValue());
       speedSlider.setBorder(new TitledBorder("Speed :" + (speedSlider.getMaximum() - speedSlider.getValue()) + "ms"));
     });
-    
+
     toolBar.add(playButton);
     toolBar.add(nextButton);
     toolBar.add(getVisitorsList());
