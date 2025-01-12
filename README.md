@@ -11,7 +11,7 @@ The universe of the Game of Life is a infinite two-dimensional grid of square ce
 
 ## Installation
 
-Java 16 is required to run this program.
+Java 16 or higher is required to run this program.
 Download the .jar file from the [releases tab](https://github.com/IzeLeam/GameOfLife/releases) and run it with the following command:
 
 ```bash
@@ -71,7 +71,7 @@ L'univers du jeu de la vie est une grille en deux dimensions, infinie de cellule
 
 ## Installation
 
-Java 16 est requis pour exécuter ce programme.
+Java 16 et supérieur est requis pour exécuter ce programme.
 Téléchargez le fichier .jar depuis l'onglet des [releases](https://github.com/IzeLeam/GameOfLife/releases) et exécutez-le avec la commande suivante :
 
 ```bash
